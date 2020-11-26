@@ -51,3 +51,27 @@ cdk destroy
 
 aws cloudformation list-stacks --stack-status-filter DELETE_COMPLETE
 ```
+
+## Boilerplate
+
+- Boiler App
+```
+mkdir boiler-app
+cd boiler-app
+cdk init app --language=python --generate-only
+tree .
+cdk list
+cdk synth
+```
+
+- Boiler App in TypeScript
+```
+mkdir boiler-app-ts && cd boiler-app-ts
+cdk init app --language=typescript --generate-only
+tree .
+npm install
+npm run build
+npm run test
+cdk list
+cdk synth
+```
