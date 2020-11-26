@@ -75,3 +75,16 @@ npm run test
 cdk list
 cdk synth
 ```
+
+- Boiler App in Java
+```
+mkdir boiler-app-java && cd boiler-app-java
+cdk init app --language=java --generate-only
+tree .
+mvn compile
+mvn test
+mvn clean
+mvn package
+cdk list
+cdk synth
+```
