@@ -1,19 +1,20 @@
 import os
 
+import aws_cdk as cdk
 from aws_cdk import (
-    core,
     aws_ec2 as ec2,
 )
+from constructs import Construct
 
 # See https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-env_profile = core.Environment(
+env_profile = cdk.Environment(
     account=os.environ.get('CDK_DEPLOY_ACCOUNT', os.environ['CDK_DEFAULT_ACCOUNT']),
     region=os.environ.get('CDK_DEPLOY_REGION', os.environ['CDK_DEFAULT_REGION'])
 )
 
 
-class DebugStack(core.Stack):
-    def __init__(self, scope: core.Construct, id: str, props, **kwargs) -> None:
+class DebugStack(cdk.Stack):
+    def __init__(self, scope: Construct, id: str, props, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # Using tags filter on networking stack to get main-vpc in given env context
@@ -33,10 +34,10 @@ class DebugStack(core.Stack):
         for subnet in vpc_db_subnets.subnets:
             print(subnet.subnet_id)
 
-        print(">>> ec2.SubnetType.PRIVATE")
-        vpc_private_subnets: ec2.SelectedSubnets = vpc.select_subnets(subnet_type=ec2.SubnetType.PRIVATE)
-        for subnet in vpc_private_subnets.subnets:
-            print(subnet.subnet_id)
+        # print(">>> ec2.SubnetType.PRIVATE")  # FIXME looks like this enum is gone?
+        # vpc_private_subnets: ec2.SelectedSubnets = vpc.select_subnets(subnet_type=ec2.SubnetType.PRIVATE)
+        # for subnet in vpc_private_subnets.subnets:
+        #     print(subnet.subnet_id)
 
         print(">>> vpc.private_subnets")
         for subnet in vpc.private_subnets:
@@ -59,7 +60,7 @@ class DebugStack(core.Stack):
         print(f"\t{uom_sg.to_string()}")
 
 
-class DebugApp(core.App):
+class DebugApp(cdk.App):
     def __init__(self):
         super().__init__()
         DebugStack(self, "debug-vpc-stack", props={}, env=env_profile)
@@ -67,7 +68,6 @@ class DebugApp(core.App):
 
 if __name__ == '__main__':
     DebugApp().synth()
-
 
 # Usage:
 #   aws sso login --profile=dev

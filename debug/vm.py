@@ -1,13 +1,14 @@
 import os
 
+import aws_cdk as cdk
 from aws_cdk import (
-    core,
     aws_ec2 as ec2,
     aws_iam as iam,
 )
+from constructs import Construct
 
 # See https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-env_profile = core.Environment(
+env_profile = cdk.Environment(
     account=os.environ.get('CDK_DEPLOY_ACCOUNT', os.environ['CDK_DEFAULT_ACCOUNT']),
     region=os.environ.get('CDK_DEPLOY_REGION', os.environ['CDK_DEFAULT_REGION'])
 )
@@ -40,9 +41,9 @@ root_device_name = "/dev/xvda"
 data_device_name = "/dev/sdf"
 
 
-class DebugStack(core.Stack):
-    def __init__(self, scope: core.Construct, id: str, props, **kwargs) -> None:
-        super().__init__(scope, id, **kwargs)
+class DebugStack(cdk.Stack):
+    def __init__(self, scope: Construct, id_: str, props, **kwargs) -> None:
+        super().__init__(scope, id_, **kwargs)
 
         my_role = iam.Role(
             self,
@@ -91,10 +92,10 @@ fi""")
             ],
         )
 
-        core.CfnOutput(self, "Output", value=my_vm.instance_id)
+        cdk.CfnOutput(self, "Output", value=my_vm.instance_id)
 
 
-class DebugApp(core.App):
+class DebugApp(cdk.App):
     def __init__(self):
         super().__init__()
         DebugStack(self, "debug-vm-stack", props={}, env=env_profile)

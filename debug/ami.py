@@ -1,19 +1,17 @@
 import os
 
-from aws_cdk import (
-    core,
-    aws_ec2 as ec2,
-)
+from aws_cdk import Environment, Stack, App, aws_ec2 as ec2
+from constructs import Construct
 
 # See https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-env_profile = core.Environment(
+env_profile = Environment(
     account=os.environ.get('CDK_DEPLOY_ACCOUNT', os.environ['CDK_DEFAULT_ACCOUNT']),
     region=os.environ.get('CDK_DEPLOY_REGION', os.environ['CDK_DEFAULT_REGION'])
 )
 
 
-class DebugStack(core.Stack):
-    def __init__(self, scope: core.Construct, id: str, props, **kwargs) -> None:
+class DebugStack(Stack):
+    def __init__(self, scope: Construct, id: str, props, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         image = ec2.MachineImage.lookup(
@@ -30,10 +28,10 @@ class DebugStack(core.Stack):
         # print(image)
 
         image_config: ec2.MachineImageConfig = image.get_image(self)
-        print(f"LOOKUP: {image_config.image_id}")
+        print(f"LOOKUP UBUNTU: {image_config.image_id}")
         # print(config.os_type)
 
-        print("-"*64)
+        print("-" * 64)
 
         amzn_linux = ec2.MachineImage.latest_amazon_linux(
             cached_in_context=True,
@@ -51,7 +49,7 @@ class DebugStack(core.Stack):
         print(f"AMZN_LINUX: {amzn_config.image_id}")
 
 
-class DebugApp(core.App):
+class DebugApp(App):
     def __init__(self):
         super().__init__()
         DebugStack(self, "debug-ami-stack", props={}, env=env_profile)
@@ -67,7 +65,7 @@ if __name__ == '__main__':
 #   cdk synth --app="python3 ami.py"
 #   cdk context -j | jq
 #
-# (clear context and repeat again)
+# (clear context and repeat)
 #   cdk context --clear
 
 # REF:
