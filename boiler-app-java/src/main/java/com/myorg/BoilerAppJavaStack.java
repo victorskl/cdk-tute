@@ -1,8 +1,10 @@
 package com.myorg;
 
-import software.amazon.awscdk.core.Construct;
-import software.amazon.awscdk.core.Stack;
-import software.amazon.awscdk.core.StackProps;
+import software.constructs.Construct;
+import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.Duration;
+import software.amazon.awscdk.services.sqs.Queue;
 
 public class BoilerAppJavaStack extends Stack {
     public BoilerAppJavaStack(final Construct scope, final String id) {
@@ -13,5 +15,10 @@ public class BoilerAppJavaStack extends Stack {
         super(scope, id, props);
 
         // The code that defines your stack goes here
+
+        // example resource
+        final Queue queue = Queue.Builder.create(this, "BoilerAppJavaQueue")
+                .visibilityTimeout(Duration.seconds(300))
+                .build();
     }
 }

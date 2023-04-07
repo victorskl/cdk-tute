@@ -1,28 +1,27 @@
 package com.myorg;
 
-import software.amazon.awscdk.core.App;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import software.amazon.awscdk.App;
+import software.amazon.awscdk.assertions.Template;
 
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.HashMap;
 
+import org.junit.jupiter.api.Test;
+
+// example test. To run these tests, uncomment this file, along with the
+// example resource in java/src/main/java/com/myorg/BoilerAppJavaStack.java
 public class BoilerAppJavaTest {
-    private final static ObjectMapper JSON =
-        new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     @Test
     public void testStack() throws IOException {
         App app = new App();
         BoilerAppJavaStack stack = new BoilerAppJavaStack(app, "test");
 
-        // synthesize the stack to a CloudFormation template and compare against
-        // a checked-in JSON file.
-        JsonNode actual = JSON.valueToTree(app.synth().getStackArtifact(stack.getArtifactId()).getTemplate());
+        Template template = Template.fromStack(stack);
 
-        assertThat(new ObjectMapper().createObjectNode()).isEqualTo(actual);
+        template.hasResourceProperties("AWS::SQS::Queue", new HashMap<String, Number>() {{
+            put("VisibilityTimeout", 300);
+        }});
     }
 }
