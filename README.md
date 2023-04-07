@@ -63,6 +63,7 @@ cdk init app --language=python --generate-only
 tree .
 cdk list
 cdk synth
+cdk diff
 ```
 
 - Boiler App in TypeScript
@@ -70,11 +71,12 @@ cdk synth
 mkdir boiler-app-ts && cd boiler-app-ts
 cdk init app --language=typescript --generate-only
 tree .
-npm install
-npm run build
-npm run test
+yarn install
+yarn run build
+yarn run test
 cdk list
 cdk synth
+cdk diff
 ```
 
 - Boiler App in Java
