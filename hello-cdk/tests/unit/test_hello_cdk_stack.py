@@ -1,19 +1,21 @@
-import json
-import pytest
-
-from aws_cdk import core
+import aws_cdk as core
+import aws_cdk.assertions as assertions
 from hello_cdk.hello_cdk_stack import HelloCdkStack
 
 
-def get_template():
-    app = core.App()
-    HelloCdkStack(app, "hello-cdk")
-    return json.dumps(app.synth().get_stack("hello-cdk").template)
-
-
 def test_sqs_queue_created():
-    assert("AWS::SQS::Queue" in get_template())
+    app = core.App()
+    stack = HelloCdkStack(app, "hello-cdk")
+    template = assertions.Template.from_stack(stack)
+
+    template.has_resource_properties("AWS::SQS::Queue", {
+        "VisibilityTimeout": 300
+    })
 
 
 def test_sns_topic_created():
-    assert("AWS::SNS::Topic" in get_template())
+    app = core.App()
+    stack = HelloCdkStack(app, "hello-cdk")
+    template = assertions.Template.from_stack(stack)
+
+    template.resource_count_is("AWS::SNS::Topic", 1)

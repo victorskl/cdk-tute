@@ -33,6 +33,7 @@ cdk init --list
 cdk init sample-app --language=python --generate-only
 
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 pytest
 
 cdk list
